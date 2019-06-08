@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MultPlatProject"
+    x:Class="MultPlatProject.BooksPage"
+    Title="Livros">
+    
+    <!-- Define botões na barra de navegação da tela -->
+    <ContentPage.ToolbarItems>
+        <!-- Adiciona botão de recarregar, com o ícone de recarregar.
+            Quando clicado, executa o comando GetCommand de BooksViewModel e
+            consulta os livros novamente. -->
+        <ToolbarItem Command="{Binding GetCommand}" Icon="reload.png"/>
+    </ContentPage.ToolbarItems>
+    
+    <!-- Define objeto no qual os elementos visuais da tela farão binding, por padrão -->
+    <ContentPage.BindingContext>
+        <!-- Cria uma instância de BooksViewModel que, quando invocar o evento
+            RequestFailed, vai chamar o método Handle_RequestFailed da página.
+            Não pode esquecer de colocar o trecho xmlns:local ali em cima. -->
+        <local:BooksViewModel RequestFailed="Handle_RequestFailed" />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout
+            HorizontalOptions="FillAndExpand">
+            <Entry 
+                x:Name="TitleEntry"
+                Placeholder="Procurar livro por título"
+                Text="{Binding TitleEntry}"/>
+            <Button Text="Buscar" Command="{Binding GetCommand}"/>
+
+            <ListView
+                ItemsSource="{Binding Books}"
+                IsPullToRefreshEnabled="true"
+                RefreshCommand="{Binding GetCommand}"
+                IsRefreshing="{Binding IsLoading}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell Text="{Binding Title}"
+                            ImageSource="{Binding Cover}"
+                            Detail="{Binding Path=Author.Name}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+
+
+    </ContentPage.Content>
+</ContentPage>
